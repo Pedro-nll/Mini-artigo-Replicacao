@@ -9,7 +9,7 @@ def fetch_top_repositories():
     }
     query = """
     {
-      search(query: "language:Python stars:>1", type: REPOSITORY, first: 6) {
+      search(query: "language:Python stars:>1", type: REPOSITORY, first: 12) {
         edges {
           node {
             ... on Repository {
