@@ -18,7 +18,7 @@ repos = {
     "pytorch/pytorch": "https://github.com/pytorch/pytorch"
 }
 
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = ""
 
 def get_commits(repo_name, per_page=30):
     url = f"https://api.github.com/repos/{repo_name}/commits"
