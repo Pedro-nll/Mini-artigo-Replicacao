@@ -20,10 +20,10 @@ repos = {
 
 GITHUB_TOKEN = ""
 
-def get_commits(repo_name, per_page=30):
+def get_commits(repo_name):
     url = f"https://api.github.com/repos/{repo_name}/commits"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-    response = requests.get(url, headers=headers, params={"per_page": per_page})
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
     return response.json()
 
