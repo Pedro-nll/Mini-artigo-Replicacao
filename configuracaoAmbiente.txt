@@ -1,1 +1,1 @@
-pip install gitpython requests radon coverage pytest chardet
+pip install gitpython requests radon coverage pytest chardet matplotlib pandas

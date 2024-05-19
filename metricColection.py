@@ -3,11 +3,10 @@ import csv
 import radon.raw
 import radon.visitors
 from radon.complexity import cc_visit
-import chardet
 
 
 def analyze_project(project_path, test_path):
-    metrics = {"LOC": 0, "NOM": 0, "NOC": 0, "CyclomaticComplexity": 0}
+    version_metrics = []
 
     for version in range(1, 13):
         version_path = project_path + f"_version_{version}"
@@ -42,18 +41,12 @@ def analyze_project(project_path, test_path):
                         print(f"UnicodeDecodeError in {file_path}: {e}")
                         continue
 
-        metrics["LOC"] += loc
-        metrics["NOM"] += nom
-        metrics["NOC"] += noc
-        metrics["CyclomaticComplexity"] += cc
+        version_metrics.append({"LOC": loc, "NOM": nom, "NOC": noc, "CyclomaticComplexity": cc})
 
-    for metric in metrics:
-        metrics[metric] /= 12  # Calculate the average over 12 versions
-
-    return metrics
+    return version_metrics
 
 def analyze_tests(project_path, test_path):
-    metrics = {"LOC": 0, "NOM": 0, "NOC": 0, "CyclomaticComplexity": 0}
+    version_metrics = []
 
     for version in range(1, 13):
         version_path = project_path + f"_version_{version}"
@@ -79,15 +72,9 @@ def analyze_tests(project_path, test_path):
                                 noc += 1
                         cc += radon.visitors.ComplexityVisitor.from_code(source).total_complexity
 
-        metrics["LOC"] += loc
-        metrics["NOM"] += nom
-        metrics["NOC"] += noc
-        metrics["CyclomaticComplexity"] += cc
+        version_metrics.append({"LOC": loc, "NOM": nom, "NOC": noc, "CyclomaticComplexity": cc})
 
-    for metric in metrics:
-        metrics[metric] /= 12  # Calculate the average over 12 versions
-
-    return metrics
+    return version_metrics
 
 # Test folder paths for each project
 test_paths = {
@@ -132,9 +119,9 @@ def main():
         # Write code metrics to CSV
         with open(code_metrics_csv_path, "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Metric", "Value"])
-            for metric, value in code_metrics.items():
-                writer.writerow([metric, value])
+            writer.writerow(["Version", "LOC", "NOM", "NOC", "CyclomaticComplexity"])
+            for version, metrics in enumerate(code_metrics, start=1):
+                writer.writerow([version, metrics["LOC"], metrics["NOM"], metrics["NOC"], metrics["CyclomaticComplexity"]])
 
         print(f"Analyzing test metrics for project: {project_name}")
         test_metrics = analyze_tests(code_path, test_path)
@@ -142,9 +129,9 @@ def main():
         # Write test metrics to CSV
         with open(test_metrics_csv_path, "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Metric", "Value"])
-            for metric, value in test_metrics.items():
-                writer.writerow([metric, value])
+            writer.writerow(["Version", "LOC", "NOM", "NOC", "CyclomaticComplexity"])
+            for version, metrics in enumerate(test_metrics, start=1):
+                writer.writerow([version, metrics["LOC"], metrics["NOM"], metrics["NOC"], metrics["CyclomaticComplexity"]])
 
 if __name__ == "__main__":
     main()
